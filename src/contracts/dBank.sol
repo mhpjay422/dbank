@@ -53,7 +53,7 @@ contract dBank {
     uint interest = interestPerSecond * depositTime;
 
     //send eth to user
-    msg.sender.transfer(etherBalanceOf[msg.sender]);
+    msg.sender.transfer(userBalance);
     token.mint(msg.sender, interest);
     //send interest in tokens to user
 
