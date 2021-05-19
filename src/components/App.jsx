@@ -50,14 +50,18 @@ class App extends Component {
   }
 
   async deposit(amount) {
+    await this.state.dbank.methods
+      .deposit()
+      .send({ value: amount.toString(), from: this.state.account });
     //check if this.state.dbank is ok
     //in try block call dBank deposit();
   }
 
   async withdraw(e) {
-    //prevent button from default click
-    //check if this.state.dbank is ok
-    //in try block call dBank withdraw();
+    e.preventDefault();
+    await this.state.dbank.methods
+      .withdraw()
+      .send({ from: this.state.account });
   }
 
   constructor(props) {
@@ -88,15 +92,59 @@ class App extends Component {
         </nav>
         <div className="container-fluid mt-5 text-center">
           <br></br>
-          <h1>{/*add welcome msg*/}</h1>
-          <h2>{/*add user address*/}</h2>
+          <h1>Welcome to dbank</h1>
+          <h2>{this.state.account}</h2>
           <br></br>
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
                 <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                  {/*add Tab deposit*/}
-                  {/*add Tab withdraw*/}
+                  <Tab eventKey="deposit" title="deposit">
+                    <div>
+                      <br />
+                      How much do you want to deposit?
+                      <br />
+                      (min amount is 0.01 ETH)
+                      <br />
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          let amount = this.depositAmount.value;
+                          amount = amount * 10 ** 18;
+                          this.deposit(amount);
+                        }}
+                      >
+                        <div>
+                          <input
+                            id="depositAmount"
+                            step="0.01"
+                            type="number"
+                            placeholder="amount"
+                            ref={(input) => (this.depositAmount = input)}
+                          />
+                        </div>
+                        <button type="submit" className="btn btn-primary">
+                          DEPOSIT
+                        </button>
+                      </form>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="withdraw" title="Withdraw">
+                    <br />
+                    Do you want to withdraw?
+                    <br />
+                    <br />
+                    <div>
+                      <button
+                        type="submit"
+                        onClick={(e) => {
+                          this.withdraw(e);
+                        }}
+                      >
+                        WITHDRAW
+                      </button>
+                    </div>
+                  </Tab>
                 </Tabs>
               </div>
             </main>
